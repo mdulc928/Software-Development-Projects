@@ -1,0 +1,5 @@
+[Thursday 1:04 PM] DULCIO, MELCHISEDEK
+    Hello, Dr. Schaub. Another strange thing might be happening with my program, and I am struggling to understand it correctly. I ran the server, and then connected 5 clients to it, and shut the server by sending it Ctrl-C. For some reason, I think a couple children continued running even after I had shut the parent down, because even though I closed all my terminals, including the one from which I ran the server. When I open the terminal back up, and used ps -x to view the current processes, I received this output, which confused me: 
+
+Is there a reason why the processes could continue to run even after the terminal has  been closed?
+

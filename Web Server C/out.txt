@@ -1,0 +1,1 @@
+It does output correctly. If you don't mind me asking, why does the terminal not display the contents though, even if it is is not human-readable?

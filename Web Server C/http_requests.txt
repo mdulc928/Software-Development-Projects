@@ -1,0 +1,13 @@
+HTTP Requests format:
+	1. a request line
+Breakdown:
+	Method(case-sensitive, all-caps) to be performed on URI
+Breakdown:
+	
+	URI - where my actions will be taking place
+	HTTP-Version
+	2. 0+ header (Ex: General/ Request/ Entity)
+	3. empty line
+	4. Message
+	* all lines are followed by CRLF
+

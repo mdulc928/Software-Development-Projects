@@ -1,0 +1,142 @@
+﻿//--------------------------------------------------------------------------------------------
+//File:   Loader.cs
+//Desc:   This program defines a class Loader which contains logic for loading file into simulated RAM.
+//               .
+//---------------------------------------------------------------------------------------------
+
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
+using System.Diagnostics;
+using System.IO;
+
+
+namespace armsim
+{
+    public struct ELF_Header
+    {
+        public byte EI_MAG0, EI_MAG1, EI_MAG2, EI_MAG3, EI_CLASS, EI_DATA, EI_VERSION;
+        byte unused1, unused2, unused3, unused4, unused5, unused6, unused7, unused8, unused9;
+        public ushort e_type;
+        public ushort e_machine;
+        public uint e_version;
+        public uint e_entry;
+        public uint e_phoff;
+        public uint e_shoff;
+        public uint e_flags;
+        public ushort e_ehsize;
+        public ushort e_phentsize;
+        public ushort e_phnum;
+        public ushort e_shentsize;
+        public ushort e_shnum;
+        public ushort e_shstrndx;
+    }
+
+    public struct Prog_Header
+    {
+        public byte p_type_b0, p_type_b1, p_type_b2, p_type_b3;             /* Segment type */
+        public uint p_offset;                                       /* Segment file offset */
+        public uint p_vaddr;                                        /* Segment virtual address */
+        public uint p_paddr;                                        /* Segment physical address */
+        public uint p_filesz;                                       /* Segment size in file */
+        public uint p_memsz;                                        /* Segment size in memory */
+        public uint p_flags;                                        /* Segment flags */
+        public uint p_align;		                                /* Segment alignment */
+    }
+
+
+
+    public class Loader
+    {
+        //Logging switches 
+        public BooleanSwitch generalSwitch = new BooleanSwitch("TraceLoader", "Traces code execution in Loader");
+
+        public int P_entry;
+
+        //Constructor 
+        public Loader() { }
+
+        //Does the actual reading and loading.
+        public bool LoadElf(string file, byte[] RAM)
+        {
+            bool success = true;
+
+            if (generalSwitch.Enabled)
+                Trace.WriteLine("Loader.LoadElf - Opening " + file + "...");
+            try
+            {
+                using (FileStream fstrm = new FileStream(file, FileMode.Open))
+                {
+                    ELF_Header s_elf = new ELF_Header();
+                    byte[] b_efl = new byte[Marshal.SizeOf(s_elf)];
+
+                    fstrm.Read(b_efl, 0, b_efl.Length);
+                    s_elf = ByteArrayToStructure<ELF_Header>(b_efl);
+
+                    if (generalSwitch.Enabled)
+                    {
+                        Trace.WriteLine("Loader.LoadELf - Number of segments: " + s_elf.e_phnum.ToString());
+                        Trace.WriteLine("Loader.LoadElf - Program Header offset: " + s_elf.e_phoff.ToString());
+                        Trace.WriteLine("Loader.LoadElf - Entry: " + s_elf.e_entry.ToString()); // If I want to check
+                    }
+
+                    P_entry = (int)s_elf.e_entry;
+
+                    //program header time
+                    for (int i = 0; i < s_elf.e_phnum; ++i)
+                    {
+                        Prog_Header p_head = new Prog_Header();
+                        b_efl = new byte[s_elf.e_phentsize];
+
+                        fstrm.Seek((int)s_elf.e_phoff + (i * (int)s_elf.e_phentsize), SeekOrigin.Begin);
+                        fstrm.Read(b_efl, 0, s_elf.e_phentsize); //why would I want an instead of leaving it uint?
+
+
+                        p_head = ByteArrayToStructure<Prog_Header>(b_efl);
+                        fstrm.Seek(p_head.p_offset, SeekOrigin.Begin);
+
+                        if (generalSwitch.Enabled)
+                        {
+                            Trace.WriteLine("Loader.LoadElf - Segment " + (i + 1).ToString() + ", Address = " + p_head.p_vaddr.ToString() + ", Offset = "
+                            + p_head.p_offset.ToString() + ", Size = " + p_head.p_filesz);
+
+                            Trace.WriteLine("Loader.LoadElf - Reading Segment " + (i + 1).ToString());
+                        }
+
+
+                        byte[] b = new byte[2];
+                        for (int e = 0; e < p_head.p_filesz; ++e)
+                        {
+                            fstrm.Read(b, 0, 1);
+                            RAM[p_head.p_vaddr + e] = b[0]; //where the writing actually takes place
+                        }
+
+                        if (generalSwitch.Enabled)
+                        {
+                            Trace.WriteLine("Loader.LoadElf - Finished reading section.");
+                        }
+
+                    }
+                }
+            }
+            catch (Exception) { success = false; }
+            finally {; };
+
+            return success;
+        }
+
+        //Implemented by Dr. Schaub to convert a byte array to a struct
+        static T ByteArrayToStructure<T>(byte[] bytes) where T : struct
+        {
+            GCHandle handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+            T stuff = (T)Marshal.PtrToStructure(handle.AddrOfPinnedObject(),
+                typeof(T));
+            handle.Free();
+            return stuff;
+        }
+    }
+}

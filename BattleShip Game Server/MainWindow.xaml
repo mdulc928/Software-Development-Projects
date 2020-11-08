@@ -1,0 +1,23 @@
+﻿<Window x:Class="Battleship.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Battleship"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="400"
+        Loaded="Window_Loaded">
+    <StackPanel>
+        <Image Source="ship.png" Height="160" Width="200" HorizontalAlignment="Left" Margin="20, 75, 0, -75"/>
+        <StackPanel x:Name="pnlRows">
+            <TextBlock Text="Specify row amount." HorizontalAlignment="Right" Margin="0, 10, 60, -15" FontStyle="Italic" FontSize="13"/>
+            <Slider x:Name="sldrRow" Value="5" Minimum="5" Maximum="10" Width="150" Margin="0, 20,37,20" HorizontalAlignment="Right" BorderBrush="Black" BorderThickness="2" VerticalAlignment="Center" ValueChanged="Sldr_ValueChanged"/>
+            
+        </StackPanel>
+
+        <Button Height="40" Width="75" Content="Start" FontSize="25" FontFamily="Arial Black" HorizontalAlignment="Right" Margin="0, 0, 38, 0" Click="BtnStart_Click"/>
+        <TextBlock FontFamily="Castellar" FontWeight="Bold" FontSize="50" Text="BATTLESHIP" Margin="3, 70" TextAlignment="Center"/>
+        <CheckBox x:Name="Cheater" Content="Cheat" Margin="20" Padding="5, -7" BorderBrush="Red" BorderThickness="2" IsChecked="True" FontSize="20" Height="30" Width="100" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+
+    </StackPanel>
+</Window>

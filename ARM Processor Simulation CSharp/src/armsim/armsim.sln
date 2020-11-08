@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30413.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "armsim", "armsim.csproj", "{592AE5C6-4265-4602-8EB2-134BA88742A4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{74887A64-AAB9-48C3-A139-92113D92659E}"
+	ProjectSection(SolutionItems) = preProject
+		images\Winicon.png = images\Winicon.png
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{D0DA4805-7BA2-47DB-97A8-C3C01A54ED69}"
+	ProjectSection(SolutionItems) = preProject
+		images\bp2.png = images\bp2.png
+		images\breakpoint.png = images\breakpoint.png
+		images\openfile.png = images\openfile.png
+		play2.png = play2.png
+		images\refresh.png = images\refresh.png
+		images\reset.png = images\reset.png
+		images\reset2.png = images\reset2.png
+		images\run.png = images\run.png
+		images\step1.png = images\step1.png
+		images\step2.png = images\step2.png
+		images\stop.png = images\stop.png
+		images\stop2.png = images\stop2.png
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{592AE5C6-4265-4602-8EB2-134BA88742A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{592AE5C6-4265-4602-8EB2-134BA88742A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{592AE5C6-4265-4602-8EB2-134BA88742A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{592AE5C6-4265-4602-8EB2-134BA88742A4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D0DA4805-7BA2-47DB-97A8-C3C01A54ED69} = {74887A64-AAB9-48C3-A139-92113D92659E}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DD66D85A-AB8F-4A26-BCC2-2090891E70DA}
+	EndGlobalSection
+EndGlobal

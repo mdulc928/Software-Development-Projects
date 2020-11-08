@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0061)https://protect.bju.edu/cps/courses/cps320/notes/Threads.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<title>Threads</title>
+	<meta name="GENERATOR" content="OpenOffice.org 3.1  (Win32)">
+	<meta name="CREATED" content="20050311;7574300">
+	<meta name="CHANGEDBY" content="Stephen Schaub">
+	<meta name="CHANGED" content="20100311;15384400">
+	<meta name="Date" content="10/11/96">
+	<meta name="Template" content="C:\Program Files\Office97\Office\HTML.DOT">
+	<meta name="Version" content="8.0.3410">
+	<style type="text/css">
+	<!--
+		TD P { color: #000000 }
+		H1 { color: #000000 }
+		P { color: #000000 }
+		H3 { color: #000000 }
+		H2 { color: #000000 }
+		A:link { color: #0000ff }
+		A:visited { color: #800080 }
+	.auto-style1 {
+	font-family: "Courier New", Courier, monospace;
+}
+	-->
+	</style>
+</head>
+<body lang="en-US" text="#000000" link="#0000ff" vlink="#800080" bgcolor="#ffffff" dir="LTR">
+<h3>CpS 320 Lecture Notes</h3>
+<h1>Threads</h1>
+<hr>
+<p>A <i>thread </i>is an independent path of execution through a
+process. 
+</p>
+<p>Normally, a process has only one path of execution. The <strong>fork(2)</strong>
+system call does <i>not</i> create an independent path of execution
+in the <em>current </em>process, it creates a <em>new process </em>(new address
+space) with its own separate path of execution.</p>
+<p>Creating processes via <strong>fork(2)</strong> can be expensive. An alternative is
+creating threads. We can create multiple threads running in a single
+process, all sharing the process's memory space.</p>
+<p>Interestingly, on a Linux system,
+each thread is listed as a separate process in the process table, but
+they all run in the same address space, sharing the same variables,
+file streams, etc.<em><br>(This is a side-effect of the Linux kernel's internal 
+architecture; it's a fascinating topic but a bit out of scope for us.)</em></p>
+<p>To create a thread:</p>
+<ul>
+	<li><p style="margin-bottom: 0in">Declare a <strong>pthread_t</strong> variable to
+	hold info about the thread<br>&nbsp; 
+	</p>
+	</li><li><p>Use <strong>pthread_create(3)</strong> to create a thread. Note that you must
+	tell it what function you want the thread to begin executing, and
+	provide an argument for the function. The function should be defined
+	like this:<br><br><tt>void *dosomething(void *arg)<br><br></tt>The
+	thread begins executing inside the function immediately (well, it <em>could</em> 
+	start immediately as far as you can tell), and ends
+	when the function returns.</p>
+</li></ul>
+<p>When the initial or "main" thread (the one that started when the program was
+run) ends, the program ends, even if other threads are running.</p>
+<p>Example: <span class="auto-style1">/home/cps320/examples/c/threads/hello.c</span></p>
+<p>&nbsp;</p>
+<h3>Compiling Programs that Use Threads</h3>
+<p>You must link with the pthread ("POSIX threading") library.&nbsp; Remember to 
+put the library last in the sequence!</p>
+<p>Example:</p>
+<ul>
+	<ul>
+		<p><tt>gcc myprog.c -omyprog -lpthread</tt></p>
+	</ul>
+</ul>
+<h2>Concurrency Control</h2>
+<p>Since multiple threads run in the same address space, if they
+attempt to access shared resources (such as global variables, file
+descriptors, and dynamically allocated memory), data corruption or
+incorrect computations can result if two threads attempt to access
+the same resource at the same time. 
+</p>
+<p>To guard against this, you should create a <i>mutex</i> (mutual
+exclusion lock) and have each thread lock it just before it attempts
+to access the global variable, and release it after it's done. 
+</p>
+<p>To create a mutex:</p>
+<ul>
+	<li><p style="margin-bottom: 0in">Declare a shared variable of type
+	<strong>pthread_mutex_t:<br></strong><br><tt>pthread_mutex_t mymutex; <br> </tt>
+	</p>
+	</li><li><p>Call <strong>pthread_mutex_init(3)</strong> to initialize the
+	mutex:<br><br><tt>pthread_mutex_init(&amp;mymutex, NULL);</tt></p>
+</li></ul>
+<p>To use the mutex:</p>
+<ul>
+	<li><p style="margin-bottom: 0in">Just before you access the shared
+	resource, lock the mutex:<br><br><tt>pthread_mutex_lock(&amp;mymutex);<br>&nbsp;</tt></p>
+	</li><li><p>After you have finished accessing the shared resource, unlock
+	the mutex to let other threads access it:<br><br><tt>pthread_mutex_unlock(&amp;mymutex);</tt></p>
+</li></ul>
+<p>Example: <span class="auto-style1">sharedbad.c, sharedok.c</span></p>
+<p>Terminology:</p>
+<ul>
+	<li><p>Any block of code that accesses a shared resource (global
+	variable, globally allocated buffer, file, socket, etc.) and must
+	therefore be executed by only one thread at a time is known as a
+	<i>critical section</i>. 
+	</p>
+	</li><li><p style="font-style: normal">Failure to properly synchronize
+	threads so that only one at a time executes in a critical section
+	leads to a <i>race condition</i>, in which the outcome is
+	nondeterministic – it depends on factors such as the order in
+	which the threads arrive, how the execution of the instructions is
+	interleaved, etc.<br>This is a <strong><em>VERY BAD THING</em></strong>.</p>
+</li></ul>
+<p>&nbsp;</p>
+<h2>Threads and Signals</h2>
+<p>When a process has several threads running through it, and a
+signal is sent to the process, which thread receives the signal and
+runs the signal handler?</p>
+<p>The answer to this question depends on a number of factors –
+including what version of Linux / Unix you're using. The behavior
+differs. Moral: <em><strong>read documentation for your system</strong></em>.</p>
+<p><br><br>
+</p>
+<h2>Thread Safety</h2>
+<p>A function is called <i>reentrant</i> or <i>"thread-safe"</i>
+if it can be safely called by multiple threads at the same time.</p>
+<p style="font-style: normal">In order to be thread-safe, a function
+must either:</p>
+<ul>
+	<li><p style="font-style: normal">Use only local variables and
+	parameters and call only thread-safe functions<br><br>or</p>
+	</li><li><p style="font-style: normal">Perform locking with mutexes to
+	protect its critical sections / calls to non thread-safe functions</p>
+</li></ul>
+<p><br><br>
+</p>
+<h3>Using Libraries in Multithreaded Apps</h3>
+<ul>
+	<li><p>Naturally, when writing multithreaded applications, you must
+	take care that all functions you write are thread-safe. However, you
+	must also ensure that all functions you call are thread-safe. If
+	you're using a third-party library, check to make sure its functions
+	are labeled "thread-safe" or "reentrant": if
+	not, you will have to use mutexes to call those functions
+	concurrently from multiple threads. 
+	</p>
+	</li><li><p>Most modern C library implementations provide thread-safe I/O and 
+	memory allocation functions (e.g., printf, malloc), and syscalls are 
+	generally threadsafe (although you may get weirdly interleaved I/O 
+	operations if you have 2 threads using one file descriptor).&nbsp; But you 
+	should check the documentation anyway!</p>
+	</li><li><p>Some C library routines are inherently non thread-safe,
+	because they store data in static buffers (e.g. strtok). Usually,
+	thread-safe versions of these have been added (strtok_r) for use in
+	multithreaded programs.</p>
+	</li><li><p>Most C I/O functions (as well as I/O system calls) use the
+	global <i>errno</i> variable to report specific error codes on
+	failure. This would cause a big problem with multithreaded apps. All modern 
+	C library implementations work around this problem by making <i>errno</i> a macro that returns a
+	thread-local value, so each thread has its own copy.</p>
+</li></ul>
+<p><br><br>
+</p>
+<h2>Summary: Processes vs. Threads</h2>
+<table border="1" cellpadding="7" cellspacing="1" style="width: 800px">
+	<tbody><tr valign="TOP">
+		<td style="width: 317px">
+			<h3 align="CENTER">Processes</h3>
+		</td>
+		<td style="width: 318px">
+			<h3 align="CENTER">Threads</h3>
+		</td>
+	</tr>
+	<tr valign="TOP">
+		<td style="width: 317px">
+			<p>A process is an independent entity created by a<strong> fork</strong></p>
+		</td>
+		<td style="width: 318px">
+			<p>A thread is associated with a process. One process can contain
+			multiple threads. <strong>pthread_create()</strong> is used to create a thread.</p>
+		</td>
+	</tr>
+	<tr valign="TOP">
+		<td style="width: 317px">
+			<p>A new child process begins running immediately after the <strong>fork(2)</strong> call</p>
+		</td>
+		<td style="width: 318px">
+			<p>A new thread begins running in a function specified in the call
+			to <strong>pthread_create</strong></p>
+		</td>
+	</tr>
+	<tr valign="TOP">
+		<td style="width: 317px">
+			<p>A child process dies when code returns from <em>main</em> or 
+			<strong>exit</strong>
+			is called</p>
+		</td>
+		<td style="width: 318px">
+			<p>A thread is destroyed when its entry-point function returns</p>
+		</td>
+	</tr>
+	<tr valign="TOP">
+		<td style="width: 317px">
+			<p>Each process has its own address space. Two processes never share 
+			any variables.&nbsp; (Although child processes will inherit the 
+			values of their parent's global variables at the moment <strong>
+			fork() </strong>was called.)</p>
+		</td>
+		<td style="width: 318px">
+			<p>All threads in a process share the same address space, but each 
+			has its own runtime stack. 
+			</p>
+			<ul>
+				<li><p style="margin-bottom: 0in">Global variables and static
+				local variables are shared 
+				</p>
+				</li><li><p>Local (non-static) variables / function parameters are not
+				shared</p>
+			</li></ul>
+		</td>
+	</tr>
+	<tr valign="TOP">
+		<td style="width: 317px">
+			<p>Since processes never share variables, no synchronization is
+			needed. 
+			</p>
+		</td>
+		<td style="width: 318px">
+			<p>Multiple threads in the same process must synchronize access to
+			shared variables using semaphores and <strong>pthread_mutex_lock() /
+			pthread_mutex_unlock()</strong>.</p>
+		</td>
+	</tr>
+	<tr valign="TOP">
+		<td style="width: 317px">
+			<p>Creating a new process with <strong>fork()</strong> is 
+			[relatively] expensive.</p>
+		</td>
+		<td style="width: 318px">
+			<p>Creating a new thread with <strong>pthread_create()</strong> is less expensive
+			than <strong>fork()</strong>.</p>
+		</td>
+	</tr>
+	<tr valign="TOP">
+		<td style="width: 317px">
+			<p>Communication between processes must be done using sockets,
+			files, or other IPC mechanisms (more work to code, but easier to get 
+			right/safe).</p>
+		</td>
+		<td style="width: 318px">
+			<p>Communication between threads can be done using shared
+			variables (less work to code, but harder to get right/safe).</p>
+		</td>
+	</tr>
+</tbody></table>
+<h3>&nbsp;</h3>
+
+</body></html>

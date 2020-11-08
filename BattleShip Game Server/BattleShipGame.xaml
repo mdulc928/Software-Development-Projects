@@ -1,0 +1,40 @@
+﻿<Window x:Class="Battleship.BattleShipGame"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Battleship"
+        mc:Ignorable="d"
+        Title="BattleShipGame" Height="600" Width="400"
+        Loaded="Window_Loaded">
+    <StackPanel x:Name="pnlOcean">
+        <Grid x:Name="grdHuman" Margin="5" Background="Aqua">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="270"/>
+            </Grid.RowDefinitions>
+            <StackPanel x:Name="pnlHuman" Height="260" HorizontalAlignment="Right" Margin="10, 5">
+                <TextBlock Text="You" FontFamily="Castellar" FontSize="15" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel x:Name="pnlHSpecs" Orientation="Vertical" HorizontalAlignment="Left" Width="80" Margin="5">
+                <TextBlock Text="Time Left:" TextWrapping="Wrap" FontSize="21" FontFamily="Castellar" Background="LightGray" Padding="2"/>
+                <TextBlock x:Name="txtTimer" Text="{Binding Path=TimeLim}" FontSize ="20" FontWeight="ExtraBold" FontFamily="Castellar" FontStyle="Italic" TextAlignment="Center" Margin="0, -25, -2, 20" Width="30" HorizontalAlignment="Right"/>
+                <TextBlock Text="Ships:" TextWrapping="Wrap" FontSize="18" Background="LightGray" Padding="2" FontFamily="Castellar"/>
+                <TextBlock x:Name="txtHShips" Text="{Binding Path=HShips}" FontSize="20" FontWeight="ExtraBold" FontFamily="Castellar" FontStyle="Italic" TextAlignment="Center" Width="30" HorizontalAlignment="Right" Margin="0, -24, 0, 0"/>
+                <Image x:Name="imgYou" Source="You.jpeg" Margin="0, 24, 0, 0"/>
+            </StackPanel>
+        </Grid>
+        <Grid x:Name="grdAi" Margin="6,5,4,5" Background="LightSteelBlue" Visibility="Visible">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="270"/>
+            </Grid.RowDefinitions>
+            <StackPanel x:Name="pnlAI" Height="260" HorizontalAlignment="Right" Margin="10,5">
+                <TextBlock Text="Opponent" FontFamily="Castellar" FontSize="15" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+            </StackPanel>
+            <StackPanel x:Name="pnlASpec" Orientation="Vertical" HorizontalAlignment="Left" Width="80" Margin="5">
+                <TextBlock  Text="Ships:" TextWrapping="Wrap" FontSize="18" Background="LightGray" Padding="2" FontFamily="Castellar" Margin="0, 20"/>
+                <TextBlock x:Name="txtAIShips" Text="{Binding Path=AIShips}" FontSize="20" FontWeight="ExtraBold" FontFamily="Castellar" FontStyle="Italic" TextAlignment="Center" Height="25" Width="27" HorizontalAlignment="Right" Margin="0, -66, 0, 0"/>
+                <Image x:Name="img" Source="Me.jpeg" VerticalAlignment="Bottom" Margin="0, 75, 0, 0"/>
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+</Window>

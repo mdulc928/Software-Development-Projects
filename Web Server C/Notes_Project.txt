@@ -1,0 +1,5 @@
+Notes about Project:
+
+Things to check with error handling: 
+	If I am correct, the thing I will need to watch most for is the I/O redirection stuff
+	or at least on the most basic level, that is what I will need to be concerned with for this level CP. Continue working and testing with the different inputs that could be recieved. 
