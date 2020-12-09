@@ -2,17 +2,17 @@
 A program that provides a management and monitoring service.
 
 # Specifications
-The program must support the following command line arguments:
+The program supports the following command line arguments:
 
 ```./sysman [--sysinfo] [--ps] [--exec <command>] [--listen <port>]```
 ### These options are as follows:
 
-* **--sysinfo** should display the following information about the system: number of users, available memory.
-* **--ps** should display a table of the current list of processes, including pid, name of executable, owner of process, physical memory consumed by process (RSS), cumulative CPU time.
-* **--exec** should execute the requested command and display the result. The command must be provided as a single quoted string, like this:
+* **--sysinfo** displays the following information about the system: number of users, available memory.
+* **--ps** displays a table of the current list of processes, including pid, name of executable, owner of process, physical memory consumed by process (RSS), cumulative CPU time.
+* **--exec** executes the requested command and display the result. The command must be provided as a single quoted string, like this:
 * **./sysman** --exec 'ls -l /home'
-* **--listen** should start the program in server mode. It should open a TCP server socket on the specified port and handle incoming connections as described in “Server Mode” below.
-The options are mutually exclusive: only one will be supplied. 
+* **--listen** starts the program in server mode. It opens a TCP server socket on the specified port and handle incoming connections as described in “Server Mode” below.
+The options are mutually exclusive: only one should be supplied. 
 
 ## Total Hours: 14 Hrs
 
