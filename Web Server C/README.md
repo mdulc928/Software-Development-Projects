@@ -1,8 +1,8 @@
-# Project 1: Webserver
+# Webserver
 
-Extend a simple line-echoing network server into a bare-bones HTTP/1.0 server named webserver. To keep things manageable, the server:
+Extends a simple line-echoing network server into a bare-bones HTTP/1.0 server named webserver. To keep things manageable, the server:
 
-Will support only “GET” requests (without querystrings or other “extra” fields), returning only a subset of the standard HTTP error codes: 
+Supports only “GET” requests (without querystrings or other “extra” fields), returning only a subset of the standard HTTP error codes: 
 
 * 200 (success)
 * 400 (malformed request)
@@ -11,11 +11,11 @@ Will support only “GET” requests (without querystrings or other “extra” 
 * 501 (unsupported request “verb” [e.g., “POST”])
 * 500 (any other error)
 
-Will ignore the contents of all request headers (but will verify that the request is in the proper format)
+Ignores the contents of all request headers (but verifies that the request is in the proper format)
 
-Therefore, will not support any HTTP features depending upon request headers (content encodings, keep-alive, etc.)
+Therefore, does not support any HTTP features depending upon request headers (content encodings, keep-alive, etc.)
 
-This summary describes the full implementation. The intermediate program versions may require a subset of the above features.
+This summary describes the full implementation.
 
 ## Time Log for Melchisedek Dulcio | Total: 11 hrs
 
